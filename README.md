@@ -1,6 +1,7 @@
 # BodmasParser
 
-A Python project created as a learning exercise to understand how parse trees work and how mathematical expressions are evaluated in compilers. This repository is a small simulation of those concepts, designed for educational purposes and personal exploration of parsing and evaluation techniques.
+A Python project created as a learning exercise to understand how parse trees, AST (Abstract Syntax Trees) work and how mathematical expressions are evaluated in compilers. This repository is a small simulation of those concepts, designed for educational purposes and personal exploration of parsing and evaluation techniques.
+No dependencies are used except for what can be found in the Python standard library. It exists solely for educational reasons.
 
 ---
 
