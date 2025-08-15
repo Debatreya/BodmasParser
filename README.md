@@ -124,7 +124,13 @@ parser.get_parse_tree()
 result = parser.evaluate()
 print("Result:", result)
 ```
+OR
+RUN the `index.py` file directly to see the example in action:
 
+```bash
+python3 index.py
+```
+![Parse Tree Example](./assets/BodmasParser.png)
 ---
 
 ## 💡 Contributing & Customization
@@ -139,22 +145,22 @@ The project includes a comprehensive test suite to validate functionality. To ru
 
 ```bash
 # Run all tests
-python3 test_parser.py
+python3 -m tests.test_parser
 
 # Run tests with more detailed output
-python3 test_parser.py -v
+python3 -m tests.test_parser -v
 
 # Run specific test classes
-python3 test_parser.py TestParseTree TestParser
+python3 -m tests.test_parser TestParseTree TestParser
 
 # Run specific test methods
-python3 test_parser.py TestParser.test_evaluate
+python3 -m tests.test_parser TestParser.test_evaluate
 
 # Run validation-specific tests
-python3 test_validation.py -v
+python3 -m tests.test_validation -v
 
 # Test parentheses handling
-python3 test_parentheses.py
+python3 -m tests.test_parentheses
 ```
 
 ### Adding Tests for Expression Extensions
