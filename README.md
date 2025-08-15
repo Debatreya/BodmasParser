@@ -224,12 +224,6 @@ Please ensure all tests pass before submitting pull requests, and add new tests 
 
 ---
 
-## 📚 License
-
-This project is open-source and available under the MIT License.
-
----
-
 ## 👨‍💻 Authors & Contact
 
-Developed by Debatreya. For questions or suggestions, please open an issue or contact via GitHub.
+Developed by Debatreya. For questions or suggestions, please open an issue or contact via [LinkedIn](https://www.linkedin.com/in/debatreya-das-895517204/) or [Twitter](https://x.com/DebatreyaDas).
