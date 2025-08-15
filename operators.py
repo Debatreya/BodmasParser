@@ -68,7 +68,7 @@ def is_valid_expression(expression: str) -> bool:
         2. Valid characters check (digits, operators, parentheses, and decimal points)
         3. Consecutive operators check
         4. Balanced parentheses check
-        5. Leading/trailing operators or parentheses check
+        5. Leading/trailing operators check.
         6. Invalid use of decimal points check (currently only 3.4 type is allowed, .4, 3. type is not allowed)
         7. Invalid sequences like '()', '(+)', '(-)', etc.
         Returns True if the expression is valid, False otherwise.
@@ -92,9 +92,9 @@ def is_valid_expression(expression: str) -> bool:
         print("Invalid expression. Parentheses are not balanced.")
         return False
     
-    # Check for leading/trailing operators or parentheses eg. "+3", "5*", "(3 + 5)", "(-2)", etc.
-    if re.match(r'^[+\-*/^()]', expression) or re.search(r'[+\-*/^()]$', expression):
-        print("Invalid expression. Expression cannot start or end with an operator or parentheses.")
+    # Check for leading/trailing operators (excluding parentheses) eg. "+3", "5*", etc.
+    if re.match(r'^[+\-*/^]', expression) or re.search(r'[+\-*/^]$', expression):
+        print("Invalid expression. Expression cannot start or end with an operator.")
         return False
     
     # Check for invalid use of decimal points e.g. "3.5.2", "3.+5", "3.-5", etc.
@@ -113,9 +113,10 @@ def is_valid_expression(expression: str) -> bool:
     # Eg: "(3 + 5) * (2 - 1)" are to be checked like -
     # ParenthesesExpressions = ['3 + 5', '2 - 1']
     # for each expression in ParenthesesExpressions, apply is_valid_expression(expression)
-    parentheses_expressions = re.findall(r'\(([^()]+)\)', expression)
+    parentheses_expressions = re.findall(r'\(([^()]*)\)', expression)
     for expr in parentheses_expressions:
-        if not is_valid_expression(expr):
+        if not expr or not is_valid_expression(expr):
+            print(f"Invalid expression inside parentheses: '{expr}'")
             return False
     
     return True

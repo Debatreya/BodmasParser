@@ -55,6 +55,7 @@ The codebase is organized into modular components:
 
 - **Expression Validation**: Ensures only valid mathematical expressions are parsed (checks for valid characters, balanced parentheses, correct operator usage).
 - **Infix to Postfix Conversion**: Converts standard infix expressions to postfix notation for easier parsing.
+- **Parentheses Support**: Handles expressions with parentheses to control order of operations, including nested parentheses.
 - **Parse Tree Construction**: Builds a binary tree representing the expression structure.
 - **Evaluation**: Computes the result by traversing the parse tree.
 - **Tree Visualization**: Prints a JSON-like structure of the parse tree for debugging and educational purposes.
@@ -103,8 +104,20 @@ To add new operators (e.g., modulus `%`, integer division `//`):
 ```python
 from index import Parser
 
+# Example without parentheses
 expr = "34 + 5 * 60 - 8 / 2"
 parser = Parser(expr)
+print("Expression:", expr)
+print("Postfix Expression:", parser.postfix)
+print("Parse Tree:")
+parser.get_parse_tree()
+result = parser.evaluate()
+print("Result:", result)
+
+# Example with parentheses changing the order of operations
+expr = "(34 + 5) * (60 - 8) / 2"
+parser = Parser(expr)
+print("\nExpression:", expr)
 print("Postfix Expression:", parser.postfix)
 print("Parse Tree:")
 parser.get_parse_tree()
@@ -140,7 +153,7 @@ python3 test_parser.py TestParser.test_evaluate
 # Run validation-specific tests
 python3 test_validation.py -v
 
-# Test parentheses handling (currently limited)
+# Test parentheses handling
 python3 test_parentheses.py
 ```
 

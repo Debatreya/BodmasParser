@@ -34,25 +34,46 @@ class Parser:
         # Create a parse tree from the postfix expression
         self.parsetree = ParseTree(self.postfix)
 
-    # Currently assuming given expression will be a infix expression 
+    # Converting infix expression to postfix expression 
     def __infix_to_postfix(self) -> list[str]:
         """
             Convert the infix expression to postfix expression.
             Returns a list of strings representing the postfix expression.
+            
+            This implementation handles parentheses and follows operator precedence:
+            - Parentheses have the highest precedence
+            - Exponentiation (^) next
+            - Multiplication and division (* and /)
+            - Addition and subtraction (+ and -)
         """
         stack : list[str] = []
         output : list[str] = []
 
-        # Split the expression using regex into tokens using the operators
+        # Split the expression using regex into tokens including parentheses
         import re
-        tokens = re.split(r'(\+|\-|\*|\/|\^)', self.expression)
+        tokens = re.findall(r'\d+\.\d+|\d+|[()+\-*/^]', self.expression)
         # eg. tokens = ['34', '+', '5', '*', '60', '-', '8', '/', '2']
+        # or for expressions with parentheses: ['(', '3', '+', '4', ')', '*', '5']
 
         for token in tokens:
             if token == '':
                 continue  # Skip empty tokens
             
-            if is_operator(token):
+            if token == '(':
+                # If token is an opening parenthesis, push it to the stack
+                stack.append(token)
+            elif token == ')':
+                # If token is a closing parenthesis, pop from the stack
+                # until an opening parenthesis is encountered
+                while stack and stack[-1] != '(':
+                    output.append(stack.pop())
+                
+                # Remove the opening parenthesis
+                if stack and stack[-1] == '(':
+                    stack.pop()
+                # Note: If stack is empty, there was a parentheses mismatch
+                # But this should be caught by is_valid_expression
+            elif is_operator(token):
                 # If the token is an operator
                 while (stack and stack[-1] != '(' and 
                        get_precedence(stack[-1]) >= get_precedence(token)):
@@ -62,8 +83,13 @@ class Parser:
                 # If the token is an operand (number)
                 output.append(token)
 
-        # Pop all the operators from the stack
+        # Pop all the remaining operators from the stack
         while stack:
+            # If there's a parenthesis left, there was a mismatch
+            # This should be caught by is_valid_expression
+            if stack[-1] == '(' or stack[-1] == ')':
+                stack.pop()
+                continue
             output.append(stack.pop())
 
         return output
@@ -119,16 +145,22 @@ if __name__ == "__main__":
 # 8. "10+20+30+40"     - Multiple additions
 # 9. "5^2+3*4-6/2"     - Complex expression with all operators
 # 10. "0.5*10+2.5"     - Mixed decimals
+# 11. "(3+4)*5"        - Parentheses changing precedence
+# 12. "3*(4+5)"        - Grouping operations
+# 13. "(3+4)*(5-2)"    - Multiple parentheses groups
+# 14. "(3+4*5)/(2-1)"  - Nested operations
+# 15. "((3+4)*2)"      - Nested parentheses
 #
 # Invalid Expressions (will raise errors):
-# 11. "3++4"           - Consecutive operators
-# 12. "3+4)"           - Unbalanced parentheses
-# 13. "(3+4"           - Unbalanced parentheses
-# 14. "3+"             - Incomplete expression
-# 15. "+3"             - Leading operator
-# 16. "3.4.5+6"        - Invalid number format
-# 17. "3a+4"           - Invalid character
-# 18. "(3+4)*5"        - Currently not supported (leading parenthesis)
+# 16. "3++4"           - Consecutive operators
+# 17. "3+4)"           - Unbalanced parentheses
+# 18. "(3+4"           - Unbalanced parentheses
+# 19. "3+"             - Incomplete expression
+# 20. "+3"             - Leading operator
+# 21. "3.4.5+6"        - Invalid number format
+# 22. "3a+4"           - Invalid character
+# 23. "()"             - Empty parentheses
+# 24. "(+)"            - Invalid content in parentheses
 #
-# Note: The current implementation doesn't support expressions starting or ending with parentheses.
-# To handle parentheses, the is_valid_expression function would need to be modified. 
+# Note: This implementation now supports expressions with parentheses!
+# Parentheses can be used to group operations and change the order of evaluation. 

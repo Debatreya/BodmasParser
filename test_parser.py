@@ -212,6 +212,19 @@ class TestParser(unittest.TestCase):
         
         parser = Parser("3^2")
         self.assertEqual(parser.evaluate(), 9)
+        
+        # Test expressions with parentheses
+        parser = Parser("(3+4)*5")
+        self.assertEqual(parser.evaluate(), 35)
+        
+        parser = Parser("3*(4+5)")
+        self.assertEqual(parser.evaluate(), 27)
+        
+        parser = Parser("(3+4)*(5-2)")
+        self.assertEqual(parser.evaluate(), 21)
+        
+        parser = Parser("((3+4)*2)")
+        self.assertEqual(parser.evaluate(), 14)
     
     def test_invalid_expressions(self):
         """Test handling of invalid expressions"""

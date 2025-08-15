@@ -62,12 +62,11 @@ class TestExpressionValidation(unittest.TestCase):
         # self.assertFalse(is_valid_expression('3.+4'))
     
     def test_parentheses_validation(self):
-        """Test current behavior with parenthesized expressions"""
-        # With current implementation, these should fail
-        # (would pass if parentheses validation is modified)
-        self.assertFalse(is_valid_expression('(3+4)'))
-        self.assertFalse(is_valid_expression('3*(4+5)'))
-        self.assertFalse(is_valid_expression('(3+4)*5'))
+        """Test behavior with parenthesized expressions"""
+        # With updated implementation, these should now pass
+        self.assertTrue(is_valid_expression('(3+4)'))
+        self.assertTrue(is_valid_expression('3*(4+5)'))
+        self.assertTrue(is_valid_expression('(3+4)*5'))
         
         # These should always fail (unbalanced parentheses)
         self.assertFalse(is_valid_expression('(3+4'))
@@ -94,36 +93,32 @@ class TestExpressionValidation(unittest.TestCase):
 
 
 class TestParenthesesExtension(unittest.TestCase):
-    """Test cases for potential parentheses extension"""
+    """Test cases for parentheses support"""
     
     def test_extended_parentheses_support(self):
         """
-        This test demonstrates how parentheses could be supported.
-        
-        NOTE: These tests are EXPECTED TO FAIL with the current implementation.
-        They are included as a reference for future extensions.
+        This test verifies that parentheses are now supported.
         """
-        print("\nThe following tests are EXPECTED TO FAIL with the current implementation:")
-        print("To support parentheses, modify the is_valid_expression function.\n")
+        print("\nThe following tests should now PASS with the updated implementation:")
+        print("Parentheses support has been implemented!\n")
         
-        # Uncomment these when parentheses support is implemented
-        # self.assertTrue(is_valid_expression('(3+4)*5'))
-        # self.assertTrue(is_valid_expression('3*(4+5)'))
-        # self.assertTrue(is_valid_expression('(3+4)*(5-2)'))
-        # self.assertTrue(is_valid_expression('(3+4*5)/(2-1)'))
+        # These tests should now pass
+        self.assertTrue(is_valid_expression('(3+4)*5'))
+        self.assertTrue(is_valid_expression('3*(4+5)'))
+        self.assertTrue(is_valid_expression('(3+4)*(5-2)'))
+        self.assertTrue(is_valid_expression('(3+4*5)/(2-1)'))
         
-        # Instead, we'll just print the validation result
+        # Print validation result to confirm
         examples = ['(3+4)*5', '3*(4+5)', '(3+4)*(5-2)', '(3+4*5)/(2-1)']
         for expr in examples:
             result = is_valid_expression(expr)
-            print(f"Expression '{expr}' is currently {'valid' if result else 'invalid'}")
+            print(f"Expression '{expr}' is now {'valid' if result else 'invalid'}")
         
-        # Recommendations for implementation
-        print("\nTo enable parentheses support:")
-        print("1. Remove or modify this check in is_valid_expression:")
-        print("   if re.match(r'^[+\\-*/^()]', expression) or re.search(r'[+\\-*/^()]$', expression):")
-        print("2. Update the infix_to_postfix algorithm to handle parentheses")
-        print("3. Update the build_tree method if needed\n")
+        # Implemented changes
+        print("\nImplemented changes to support parentheses:")
+        print("1. Modified validation to allow expressions starting/ending with parentheses")
+        print("2. Enhanced infix-to-postfix algorithm to handle parentheses properly")
+        print("3. Added comprehensive test cases for parentheses expressions\n")
 
 
 if __name__ == '__main__':
