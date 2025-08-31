@@ -5,10 +5,15 @@ import sys
 import os
 import json
 import re
+import dotenv
 from typing import Dict, List, Union, Optional
 
 # Add the parent directory to the Python path to import from the root directory
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+
+# Load environment variables from config.env
+dotenv.load_dotenv(os.path.join(parent_dir, "config.env"))
 
 from index import Parser
 from operators import is_valid_expression, valid_parentheses
@@ -19,12 +24,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Get frontend URL from environment or use a safe default for development
+frontend_url = os.getenv("FRONTEND_URL", "http://127.0.0.1:8080")
+allowed_origins = [frontend_url]
+
+# In debug mode, allow requests from any origin
+if os.getenv("DEBUG", "").lower() in ("true", "1", "yes"):
+    allowed_origins = ["*"]
+    print(f"Running in debug mode - allowing all CORS origins")
+else:
+    print(f"CORS configured for: {allowed_origins}")
+
 # Configure CORS to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
+    allow_methods=["GET", "POST"],  # Only allow GET and POST
     allow_headers=["*"],  # Allows all headers
     expose_headers=["*"]  # Expose all headers
 )

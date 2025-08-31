@@ -10,10 +10,14 @@ pkill -f "python serve_frontend.py" 2>/dev/null
 # Move to the project directory
 cd "$(dirname "$0")"
 
+# Generate config files from environment variables
+echo "Generating configuration files..."
+source .venv/bin/activate
+python generate_config.py
+
 # Start the API server in the background
 echo "Starting API server..."
-source venv/bin/activate
-python run_api.py > api_server.log 2>&1 &
+python run_api.py > /dev/null 2>&1 &
 API_PID=$!
 
 # Wait a moment to ensure API is up
@@ -29,7 +33,7 @@ echo "API server started with PID $API_PID"
 
 # Start the frontend server in the background
 echo "Starting frontend server..."
-python serve_frontend.py > frontend_server.log 2>&1 &
+python serve_frontend.py > /dev/null 2>&1 &
 FRONTEND_PID=$!
 
 echo "Frontend server started with PID $FRONTEND_PID"
