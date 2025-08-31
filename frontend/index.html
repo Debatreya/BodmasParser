@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BodmasParser Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include D3.js for tree visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Configuration script - loads environment settings -->
+    <script src="config.js"></script>
+    <!-- Main application script -->
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>BodmasParser Visualizer</h1>
+        <p>Enter a mathematical expression to visualize its parse tree and evaluation. <a href="api-docs.html" target="_blank">View API Documentation</a></p>
+        
+        <div class="input-section">
+            <h2>Expression Input</h2>
+            <input type="text" id="expression-input" placeholder="Enter mathematical expression (e.g. 3+4*5 or (3+4)*5)" />
+            <button id="parse-button">Parse</button>
+            <div class="status-section">
+                <div>API URL: <code id="api-url-display"></code></div>
+                <div>Status: <span id="connection-status">Checking connection...</span></div>
+            </div>
+            <div id="debug-info" style="margin-top: 10px; color: #666; font-size: 12px;"></div>
+            
+            <div class="example-expressions">
+                <h3>Example Expressions:</h3>
+                <div class="example-expression" data-expr="3+4*5">3+4*5</div>
+                <div class="example-expression" data-expr="(3+4)*5">
+                    (3+4)*5
+                </div>
+                <div class="example-expression" data-expr="3.5+4.2*2-1">
+                    3.5+4.2*2-1
+                </div>
+                <div class="example-expression" data-expr="5^2+3*4-6/2">
+                    5^2+3*4-6/2
+                </div>
+                <div class="example-expression" data-expr="((3+4)*2)/((6/3)+1)">
+                    ((3+4)*2)/((6/3)+1)
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-section" id="result-section" style="display: none;">
+            <div class="result-card">
+                <h2>Evaluation Result</h2>
+                <div id="validation-status"></div>
+                <div id="result"></div>
+            </div>
+            
+            <div class="result-card">
+                <h2>Postfix Expression</h2>
+                <pre id="postfix"></pre>
+            </div>
+            
+            <div class="result-card">
+                <h2>Parse Tree (JSON)</h2>
+                <pre id="parse-tree-json"></pre>
+            </div>
+        </div>
+        
+        <div class="tree-visualization" id="tree-visualization" style="display: none;">
+            <h2>Parse Tree Visualization</h2>
+            <div id="tree-container" style="width: 100%; height: 450px;"></div>
+        </div>
+    </div>
+</body>
+</html>

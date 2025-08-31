@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BodmasParser API Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .api-section {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .endpoint {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .endpoint:last-child {
+            border-bottom: none;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .get {
+            background-color: #61affe;
+        }
+        
+        .post {
+            background-color: #49cc90;
+        }
+        
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+        
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .param-table th, .param-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        .param-table th {
+            background-color: #f5f5f5;
+        }
+        
+        .response-example {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: #eef2f7;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BodmasParser API Documentation</h1>
+        <p>Welcome to the BodmasParser API documentation. This API allows you to parse and evaluate mathematical expressions, validate expressions, and perform health checks.</p>
+        
+        <div class="api-section">
+            <h2>Base URL</h2>
+            <p>All API endpoints are relative to: <code>http://127.0.0.1:8000</code></p>
+            <p>For interactive Swagger documentation, visit: <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a></p>
+        </div>
+        
+        <div class="api-section">
+            <h2>Endpoints</h2>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/parse</span>
+                </h3>
+                <p>Parse and evaluate a mathematical expression. This endpoint takes a mathematical expression, validates it, converts it to postfix notation, builds a parse tree, and evaluates the result.</p>
+                
+                <h4>Request Body</h4>
+                <div class="code-block">
+{
+    "expression": "string"  // A valid mathematical expression (required)
+}
+                </div>
+                
+                <h4>Parameters</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>expression</td>
+                        <td>string</td>
+                        <td>Yes</td>
+                        <td>A mathematical expression to parse and evaluate (e.g., "3+4*5")</td>
+                    </tr>
+                </table>
+                
+                <h4>Response</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>200 OK</td>
+                        <td>Expression successfully parsed and evaluated</td>
+                    </tr>
+                    <tr>
+                        <td>400 Bad Request</td>
+                        <td>Invalid expression or parsing error</td>
+                    </tr>
+                </table>
+                
+                <h4>Response Body</h4>
+                <div class="code-block">
+{
+    "postfix": ["string"],     // The expression in postfix notation as an array of tokens
+    "parse_tree": {},          // A nested object representing the parse tree
+    "result": number,          // The numerical result of evaluating the expression
+    "input_expression": "string", // The original input expression
+    "valid": boolean,          // Whether the expression is valid
+    "error": "string" | null   // Error message if the expression is invalid, null otherwise
+}
+                </div>
+                
+                <h4>Example</h4>
+                <p>Request:</p>
+                <div class="code-block">
+POST /parse
+Content-Type: application/json
+
+{
+    "expression": "3+4*5"
+}
+                </div>
+                
+                <p>Response:</p>
+                <div class="code-block">
+{
+    "postfix": ["3", "4", "5", "*", "+"],
+    "parse_tree": {
+        "operator": "+",
+        "left": "3",
+        "right": {
+            "operator": "*",
+            "left": "4",
+            "right": "5"
+        }
+    },
+    "result": 23.0,
+    "input_expression": "3+4*5",
+    "valid": true,
+    "error": null
+}
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/validate/{expression}</span>
+                </h3>
+                <p>Validate a mathematical expression without parsing or evaluating it.</p>
+                
+                <h4>Parameters</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>expression</td>
+                        <td>string (path parameter)</td>
+                        <td>Yes</td>
+                        <td>A mathematical expression to validate (e.g., "3+4*5")</td>
+                    </tr>
+                </table>
+                
+                <h4>Response</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>200 OK</td>
+                        <td>Validation successful</td>
+                    </tr>
+                    <tr>
+                        <td>400 Bad Request</td>
+                        <td>Validation error</td>
+                    </tr>
+                </table>
+                
+                <h4>Response Body</h4>
+                <div class="code-block">
+{
+    "valid": boolean  // Whether the expression is valid
+}
+                </div>
+                
+                <h4>Example</h4>
+                <p>Request:</p>
+                <div class="code-block">
+GET /validate/3%2B4*5  // URL-encoded as 3+4*5
+                </div>
+                
+                <p>Response:</p>
+                <div class="code-block">
+{
+    "valid": true
+}
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/ping</span>
+                </h3>
+                <p>Simple health check endpoint to verify that the API is operational.</p>
+                
+                <h4>Response</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>200 OK</td>
+                        <td>API is operational</td>
+                    </tr>
+                </table>
+                
+                <h4>Response Body</h4>
+                <div class="code-block">
+{
+    "status": "ok",
+    "message": "API is operational"
+}
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/</span>
+                </h3>
+                <p>Root endpoint that provides basic information about the API.</p>
+                
+                <h4>Response</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>200 OK</td>
+                        <td>API information retrieved successfully</td>
+                    </tr>
+                </table>
+                
+                <h4>Response Body</h4>
+                <div class="code-block">
+{
+    "message": "Welcome to the BodmasParser API",
+    "status": "operational",
+    "documentation": "/docs",
+    "endpoints": [
+        {
+            "path": "/parse",
+            "method": "POST",
+            "description": "Parse and evaluate a mathematical expression"
+        },
+        {
+            "path": "/validate/{expression}",
+            "method": "GET",
+            "description": "Validate a mathematical expression"
+        },
+        {
+            "path": "/ping",
+            "method": "GET",
+            "description": "Simple health check endpoint"
+        }
+    ]
+}
+                </div>
+            </div>
+        </div>
+        
+        <div class="api-section">
+            <h2>Error Handling</h2>
+            <p>The API returns appropriate HTTP status codes and detailed error messages for different types of errors:</p>
+            
+            <table class="param-table">
+                <tr>
+                    <th>Error Type</th>
+                    <th>HTTP Status</th>
+                    <th>Response Format</th>
+                </tr>
+                <tr>
+                    <td>Invalid Expression</td>
+                    <td>200 OK (with valid=false)</td>
+                    <td>
+                        <div class="code-block">
+{
+    "postfix": [],
+    "parse_tree": {},
+    "result": 0.0,
+    "input_expression": "invalid-expression",
+    "valid": false,
+    "error": "Specific error message"
+}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Invalid Request</td>
+                    <td>400 Bad Request</td>
+                    <td>
+                        <div class="code-block">
+{
+    "detail": "Error message"
+}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <h4>Common Error Messages</h4>
+            <ul>
+                <li>"Expression cannot be empty"</li>
+                <li>"Invalid characters in expression. Only +, -, *, /, ^, decimal numbers and () are allowed."</li>
+                <li>"Invalid expression. Consecutive operators are not allowed."</li>
+                <li>"Invalid expression. Parentheses are not balanced."</li>
+                <li>"Invalid expression. Expression cannot start or end with an operator."</li>
+                <li>"Division by zero"</li>
+            </ul>
+        </div>
+        
+        <div class="api-section">
+            <h2>Usage Examples</h2>
+            
+            <h4>Python Example</h4>
+            <div class="code-block">
+import requests
+
+# Parse and evaluate an expression
+response = requests.post(
+    "http://127.0.0.1:8000/parse",
+    json={"expression": "(3+4)*5"}
+)
+data = response.json()
+print(f"Result: {data['result']}")  # Result: 35.0
+
+# Validate an expression
+response = requests.get("http://127.0.0.1:8000/validate/3%2B4*5")
+data = response.json()
+print(f"Valid: {data['valid']}")  # Valid: true
+            </div>
+            
+            <h4>JavaScript Example</h4>
+            <div class="code-block">
+// Parse and evaluate an expression
+fetch('http://127.0.0.1:8000/parse', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ expression: '(3+4)*5' })
+})
+.then(response => response.json())
+.then(data => console.log(`Result: ${data.result}`));  // Result: 35.0
+
+// Validate an expression
+fetch('http://127.0.0.1:8000/validate/3%2B4*5')
+.then(response => response.json())
+.then(data => console.log(`Valid: ${data.valid}`));  // Valid: true
+            </div>
+            
+            <h4>cURL Example</h4>
+            <div class="code-block">
+# Parse and evaluate an expression
+curl -X POST "http://127.0.0.1:8000/parse" \
+     -H "Content-Type: application/json" \
+     -d '{"expression": "(3+4)*5"}'
+
+# Validate an expression
+curl "http://127.0.0.1:8000/validate/3%2B4*5"
+            </div>
+        </div>
+        
+        <div class="api-section">
+            <h2>Back to Visualizer</h2>
+            <p><a href="index.html">Return to the BodmasParser Visualizer</a></p>
+        </div>
+    </div>
+</body>
+</html>

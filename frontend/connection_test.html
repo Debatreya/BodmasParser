@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .pending {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    <p>This page tests the connection to the BodmasParser API.</p>
+    
+    <div>
+        <h2>Test Configuration</h2>
+        <div>
+            <label for="api-url">API URL:</label>
+            <input type="text" id="api-url" value="http://127.0.0.1:8000" style="width: 300px;">
+        </div>
+        <div style="margin-top: 10px;">
+            <button id="test-ping">Test Ping Endpoint</button>
+            <button id="test-parse">Test Parse Endpoint</button>
+            <button id="test-validate">Test Validate Endpoint</button>
+        </div>
+    </div>
+    
+    <div>
+        <h2>Network Settings</h2>
+        <div>
+            <label>Timeout (ms): </label>
+            <input type="number" id="timeout" value="5000" min="1000" max="30000">
+        </div>
+        <div style="margin-top: 10px;">
+            <label>Content Type: </label>
+            <select id="content-type">
+                <option value="application/json">application/json</option>
+                <option value="text/plain">text/plain</option>
+            </select>
+        </div>
+        <div style="margin-top: 10px;">
+            <label>Add CORS Headers: </label>
+            <input type="checkbox" id="cors-headers" checked>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h2>Test Results</h2>
+        <div id="ping-result" class="result pending">Ping endpoint: Not tested</div>
+        <div id="parse-result" class="result pending">Parse endpoint: Not tested</div>
+        <div id="validate-result" class="result pending">Validate endpoint: Not tested</div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h2>Raw Response</h2>
+        <pre id="response-data">No data yet</pre>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h2>Browser Information</h2>
+        <div id="browser-info"></div>
+        <div id="cors-info"></div>
+    </div>
+    
+    <script>
+        // Display browser information
+        document.getElementById('browser-info').innerHTML = `
+            <p>User Agent: ${navigator.userAgent}</p>
+            <p>Platform: ${navigator.platform}</p>
+            <p>Is Online: ${navigator.onLine}</p>
+        `;
+        
+        // Function to update the response data
+        function updateResponseData(data) {
+            document.getElementById('response-data').textContent = 
+                typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+        }
+        
+        // Function to set result status
+        function setResultStatus(elementId, isSuccess, message) {
+            const element = document.getElementById(elementId);
+            if (isSuccess) {
+                element.className = 'result success';
+                element.textContent = `Success: ${message}`;
+            } else {
+                element.className = 'result error';
+                element.textContent = `Error: ${message}`;
+            }
+        }
+        
+        // Function to get fetch options
+        function getFetchOptions(method, body = null) {
+            const timeout = parseInt(document.getElementById('timeout').value);
+            const contentType = document.getElementById('content-type').value;
+            const addCorsHeaders = document.getElementById('cors-headers').checked;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'Accept': 'application/json'
+                },
+                signal: AbortSignal.timeout(timeout)
+            };
+            
+            if (body) {
+                options.body = typeof body === 'object' ? JSON.stringify(body) : body;
+                options.headers['Content-Type'] = contentType;
+            }
+            
+            if (addCorsHeaders) {
+                options.mode = 'cors';
+                options.credentials = 'same-origin';
+            }
+            
+            return options;
+        }
+        
+        // Test ping endpoint
+        document.getElementById('test-ping').addEventListener('click', async function() {
+            const pingResult = document.getElementById('ping-result');
+            pingResult.className = 'result pending';
+            pingResult.textContent = 'Ping endpoint: Testing...';
+            
+            const apiUrl = document.getElementById('api-url').value;
+            
+            try {
+                console.log('Testing ping endpoint at:', apiUrl + '/ping');
+                const response = await fetch(apiUrl + '/ping', getFetchOptions('GET'));
+                
+                console.log('Ping response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResponseData(data);
+                    setResultStatus('ping-result', true, `Status: ${data.status}`);
+                    console.log('Ping data:', data);
+                } else {
+                    updateResponseData(`Status: ${response.status} ${response.statusText}`);
+                    setResultStatus('ping-result', false, `Status: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Ping error:', error);
+                updateResponseData(`Error: ${error.message}`);
+                setResultStatus('ping-result', false, error.message);
+                
+                // Check if it's a CORS error
+                if (error.message.includes('CORS') || error.message.includes('cross-origin')) {
+                    document.getElementById('cors-info').innerHTML = `
+                        <p class="error">CORS Error Detected! Try these solutions:</p>
+                        <ol>
+                            <li>Make sure the API server has CORS enabled</li>
+                            <li>Check if the API URL is correct</li>
+                            <li>Try using the same domain for frontend and API</li>
+                        </ol>
+                    `;
+                }
+            }
+        });
+        
+        // Test parse endpoint
+        document.getElementById('test-parse').addEventListener('click', async function() {
+            const parseResult = document.getElementById('parse-result');
+            parseResult.className = 'result pending';
+            parseResult.textContent = 'Parse endpoint: Testing...';
+            
+            const apiUrl = document.getElementById('api-url').value;
+            
+            try {
+                console.log('Testing parse endpoint at:', apiUrl + '/parse');
+                const response = await fetch(apiUrl + '/parse', 
+                    getFetchOptions('POST', { expression: '3+4*5' })
+                );
+                
+                console.log('Parse response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResponseData(data);
+                    setResultStatus('parse-result', true, `Result: ${data.result}`);
+                    console.log('Parse data:', data);
+                } else {
+                    updateResponseData(`Status: ${response.status} ${response.statusText}`);
+                    setResultStatus('parse-result', false, `Status: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Parse error:', error);
+                updateResponseData(`Error: ${error.message}`);
+                setResultStatus('parse-result', false, error.message);
+            }
+        });
+        
+        // Test validate endpoint
+        document.getElementById('test-validate').addEventListener('click', async function() {
+            const validateResult = document.getElementById('validate-result');
+            validateResult.className = 'result pending';
+            validateResult.textContent = 'Validate endpoint: Testing...';
+            
+            const apiUrl = document.getElementById('api-url').value;
+            
+            try {
+                console.log('Testing validate endpoint at:', apiUrl + '/validate/3%2B4*5');
+                const response = await fetch(apiUrl + '/validate/3%2B4*5', 
+                    getFetchOptions('GET')
+                );
+                
+                console.log('Validate response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResponseData(data);
+                    setResultStatus('validate-result', true, `Valid: ${data.valid}`);
+                    console.log('Validate data:', data);
+                } else {
+                    updateResponseData(`Status: ${response.status} ${response.statusText}`);
+                    setResultStatus('validate-result', false, `Status: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Validate error:', error);
+                updateResponseData(`Error: ${error.message}`);
+                setResultStatus('validate-result', false, error.message);
+            }
+        });
+    </script>
+</body>
+</html>

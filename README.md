@@ -15,6 +15,45 @@ The codebase is organized into modular components:
 
 ---
 
+## 🚀 Quick Start
+
+### Installation and Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/BodmasParser.git
+   cd BodmasParser
+   ```
+
+2. Set up the Python environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # Linux/macOS
+   pip install -r requirements.txt
+   ```
+
+3. Start the application:
+   ```bash
+   ./start_servers.sh
+   ```
+
+4. Open your browser and visit: http://localhost:8080
+
+### Docker Deployment
+
+You can also run BodmasParser using Docker:
+
+```bash
+# Build and run using Docker Compose
+docker-compose up --build
+
+# Or run the containers separately
+docker build -t bodmasparser-api .
+docker build -t bodmasparser-frontend -f Dockerfile.frontend .
+docker run -p 8000:8000 bodmasparser-api
+docker run -p 8080:80 bodmasparser-frontend
+```
+
 ## 🏗️ Class Structure & Relationships
 
 ### 1. `ParseNode`
