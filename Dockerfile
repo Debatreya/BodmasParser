@@ -30,7 +30,7 @@ COPY frontend/ /var/www/html/
 ENV DEBUG=False
 ENV HOST=127.0.0.1
 ENV API_PORT=8000
-ENV FRONTEND_URL=http://localhost
+ENV FRONTEND_URL=https://bodmasparser.onrender.com
 
 # Make script executable
 RUN chmod +x /app/update_frontend_config.py
@@ -38,6 +38,11 @@ RUN chmod +x /app/update_frontend_config.py
 # Generate config files with internal API URL
 ENV API_URL="/api"
 RUN python /app/update_frontend_config.py
+
+# Create a simple script to update the script.js file to use relative URLs
+RUN echo '#!/bin/bash\necho "Updating script.js to use relative URLs"\nsed -i "s|const API_URL = window.BACKEND_URL .*|const API_URL = \"/api\";|g" /var/www/html/script.js\ncat /var/www/html/script.js | grep API_URL' > /app/update_script.sh && \
+    chmod +x /app/update_script.sh && \
+    /app/update_script.sh
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
