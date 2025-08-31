@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+</head>
+<body>
+    <h1>BodmasParser API Test</h1>
+    <div>
+        <h2>API Connection Test</h2>
+        <button id="test-button">Test Connection</button>
+        <div id="result">Click the button to test API connection</div>
+    </div>
+
+    <script>
+        document.getElementById('test-button').addEventListener('click', async function() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testing connection...';
+            
+            try {
+                // Try to fetch the ping endpoint
+                const response = await fetch('http://127.0.0.1:8000/ping');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.textContent = `Success! API responded with: ${JSON.stringify(data)}`;
+                    resultDiv.style.color = 'green';
+                } else {
+                    resultDiv.textContent = `Error: API responded with status ${response.status}`;
+                    resultDiv.style.color = 'red';
+                }
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
