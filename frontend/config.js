@@ -21,7 +21,7 @@ async function loadConfiguration() {
 }
 
 // Initialize default configuration
-window.BACKEND_URL = 'http://127.0.0.1:8000';
+window.BACKEND_URL = 'https://bodmasparser.onrender.com/';
 
 // Try to load configuration, but don't block page load
 loadConfiguration().catch(error => {

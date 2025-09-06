@@ -95,8 +95,8 @@
         
         <div class="api-section">
             <h2>Base URL</h2>
-            <p>All API endpoints are relative to: <code>http://127.0.0.1:8000</code></p>
-            <p>For interactive Swagger documentation, visit: <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a></p>
+            <p>All API endpoints are relative to: <code>https://bodmasparser.onrender.com</code></p>
+            <p>For interactive Swagger documentation, visit: <a href="https://bodmasparser.onrender.com/docs" target="_blank">https://bodmasparser.onrender.com/docs</a></p>
         </div>
         
         <div class="api-section">
@@ -386,14 +386,14 @@ import requests
 
 # Parse and evaluate an expression
 response = requests.post(
-    "http://127.0.0.1:8000/parse",
+    "https://bodmasparser.onrender.com/parse",
     json={"expression": "(3+4)*5"}
 )
 data = response.json()
 print(f"Result: {data['result']}")  # Result: 35.0
 
 # Validate an expression
-response = requests.get("http://127.0.0.1:8000/validate/3%2B4*5")
+response = requests.get("https://bodmasparser.onrender.com/validate/3%2B4*5")
 data = response.json()
 print(f"Valid: {data['valid']}")  # Valid: true
             </div>
@@ -401,7 +401,7 @@ print(f"Valid: {data['valid']}")  # Valid: true
             <h4>JavaScript Example</h4>
             <div class="code-block">
 // Parse and evaluate an expression
-fetch('http://127.0.0.1:8000/parse', {
+fetch('https://bodmasparser.onrender.com/parse', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ expression: '(3+4)*5' })
@@ -410,7 +410,7 @@ fetch('http://127.0.0.1:8000/parse', {
 .then(data => console.log(`Result: ${data.result}`));  // Result: 35.0
 
 // Validate an expression
-fetch('http://127.0.0.1:8000/validate/3%2B4*5')
+fetch('https://bodmasparser.onrender.com/validate/3%2B4*5')
 .then(response => response.json())
 .then(data => console.log(`Valid: ${data.valid}`));  // Valid: true
             </div>
@@ -418,12 +418,12 @@ fetch('http://127.0.0.1:8000/validate/3%2B4*5')
             <h4>cURL Example</h4>
             <div class="code-block">
 # Parse and evaluate an expression
-curl -X POST "http://127.0.0.1:8000/parse" \
+curl -X POST "https://bodmasparser.onrender.com/parse" \
      -H "Content-Type: application/json" \
      -d '{"expression": "(3+4)*5"}'
 
 # Validate an expression
-curl "http://127.0.0.1:8000/validate/3%2B4*5"
+curl "https://bodmasparser.onrender.com/validate/3%2B4*5"
             </div>
         </div>
         
