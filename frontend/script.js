@@ -1,6 +1,6 @@
 // API endpoint - Default value used for local development
 // This value can be replaced during build process or via a config endpoint
-const API_URL = 'https://bodmasparser.onrender.com/' || 'http://127.0.0.1:8000';
+const API_URL = 'https://bodmasparser.onrender.com' || 'http://127.0.0.1:8000';
 
 // Add this debugging code to check what's happening
 console.log("Frontend script loaded!");
