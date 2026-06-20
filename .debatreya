@@ -1,0 +1,14 @@
+{
+  "id": "bodmas-parser",
+  "name": "Bodmas Parser",
+  "tagline": "Lightweight Python AST parser for mathematical expressions",
+  "description": "A lightweight Python project that builds an Abstract Syntax Tree (AST) for mathematical expressions, with parsing, validation, and evaluation support including proper parentheses handling. Designed as a minimal, educational codebase that can be extended with new operators and functions.",
+  "techStack": ["Python", "HTML", "JavaScript", "CSS", "Shell", "Dockerfile"],
+  "links": {
+    "github": "https://github.com/Debatreya/BodmasParser",
+    "demo": ""
+  },
+  "featured": true,
+  "priority": 80,
+  "hasDeepDive": false
+}
